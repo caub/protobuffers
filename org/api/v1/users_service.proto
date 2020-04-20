@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package entryfy.org.api.v1;
+import "entryfy/org/api/v1/entities.proto";
+
+//option go_package = "github.com/entryfy/org/api/v1;org-api";
+option java_multiple_files = true;
+option java_package = "com.entryfy.org.api.v1";
+option csharp_namespace = "Entryfy.Org.Api.V1";
+option ruby_package = "Entryfy::Org::Api::V1";
+
+service UsersService {
+    rpc GetUsers (GetUsersRequest) returns (GetUsersResponse) {
+    }
+    rpc CreateUsers (CreateUsersRequest) returns (CreateUsersResponse) {
+    }
+    rpc UpdateUsers (UpdateUsersRequest) returns (UpdateUsersResponse) {
+    }
+    rpc DeleteUsers (DeleteUsersRequest) returns (DeleteUsersResponse) {
+    }
+}
+
+message GetUsersRequest {
+    string organization_slug = 1;
+    repeated string uuids = 2; // Send an empty array to fetch all users
+}
+
+message GetUsersResponse {
+    repeated User users = 1;
+}
+
+message CreateUsersRequest {
+    string organization_slug = 1;
+    repeated User users = 2;
+}
+
+message CreateUsersResponse {
+    repeated BizOperation biz_operations = 1;
+}
+
+message UpdateUsersRequest {
+    string organization_slug = 1;
+    repeated User users = 2;
+}
+
+message UpdateUsersResponse {
+    repeated BizOperation biz_operations = 1;
+}
+
+message DeleteUsersRequest {
+    string organization_slug = 1;
+    repeated string uuids = 2;
+}
+
+message DeleteUsersResponse {
+    repeated BizOperation biz_operations = 1;
+}
