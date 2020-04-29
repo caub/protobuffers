@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package entryfy.org.api.v1;
 import "google/protobuf/timestamp.proto";
-import "entities.proto";
+import "entryfy/org/api/v1/entities.proto";
 
 //option go_package = "github.com/entryfy/org/api/v1;org-api";
 option java_multiple_files = true;
@@ -30,12 +30,6 @@ message GetTemporaryAccessesResponse {
     repeated TemporaryAccess temporary_accesses = 1;
 }
 
-message Guest {
-    string email = 1; // Mandatory
-    string first_name = 2; // Optional
-    string last_name = 3; // Optional
-}
-
 message TemporaryAccessUserContainer {
     string user_uuid = 1;
 }
@@ -58,6 +52,7 @@ message TemporaryAccessBody {
     repeated Guest guests = 8;
     repeated TemporaryAccessDoorContainer doors = 9;
     repeated TemporaryAccessUserContainer users = 10;
+    bool welcome_email_required = 11;
 }
 
 message CreateTemporaryAccessesRequest {

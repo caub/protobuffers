@@ -18,6 +18,8 @@ service UsersService {
     }
     rpc DeleteUsers (DeleteUsersRequest) returns (DeleteUsersResponse) {
     }
+    rpc ResendCredentials (ResendCredentialsRequest) returns (ResendCredentialsResponse) {
+    }
 }
 
 message GetUsersRequest {
@@ -54,4 +56,12 @@ message DeleteUsersRequest {
 
 message DeleteUsersResponse {
     repeated BizOperation biz_operations = 1;
+}
+
+message ResendCredentialsRequest {
+    string organization_slug = 1;
+    repeated string uuids = 2;
+}
+
+message ResendCredentialsResponse {
 }

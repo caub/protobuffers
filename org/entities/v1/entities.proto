@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package entryfy.org.api.v1;
+package entryfy.org.entities.v1;
 import "google/protobuf/timestamp.proto";
 
-//option go_package = "github.com/entryfy/org/api/v1;org-api";
+option go_package = "pkg/entryfy/org/entities/v1";
 option java_multiple_files = true;
-option java_package = "com.entryfy.org.api.v1";
-option csharp_namespace = "Entryfy.Org.Api.V1";
-option ruby_package = "Entryfy::Org::Api::V1";
+option java_package = "com.entryfy.org.entities.v1";
+option csharp_namespace = "Entryfy.Org.Entities.V1";
+option ruby_package = "Entryfy::Org::Entities::V1";
 
 message BizOperation {
     uint64 id = 1; // Obsolete, use UUID instead
@@ -450,7 +450,7 @@ message Access {
     Status status = 4;
     map<string, string> preferences = 5;
     google.protobuf.Timestamp valid_from = 6;
-    google.protobuf.Timestamp valid_to = 7; // Mandatory if the kind is KIND_TEMPORARY
+    google.protobuf.Timestamp valid_to = 7; // Mandatory for temporary accesses
     google.protobuf.Timestamp created_at = 8;
     google.protobuf.Timestamp updated_at = 9;
     Schedule schedule = 10;
@@ -475,10 +475,4 @@ message AccessUser {
     string user_uuid = 3;
     google.protobuf.Timestamp created_at = 4;
     google.protobuf.Timestamp updated_at = 5;
-}
-
-message Guest {
-    string email = 1; // Mandatory
-    string first_name = 2; // Optional
-    string last_name = 3; // Optional
 }
