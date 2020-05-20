@@ -1,0 +1,19 @@
+{
+  "name": "entryfy-protobuffers",
+  "version": "1.0.0",
+  "description": "Entryfy protobuffers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Entryfy/protobuffers.git"
+  },
+  "author": "Entryfy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Entryfy/protobuffers/issues"
+  },
+  "homepage": "https://github.com/Entryfy/protobuffers#readme"
+}
