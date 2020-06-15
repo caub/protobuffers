@@ -1,0 +1,172 @@
+syntax = "proto3";
+
+package entryfy.org.sites.v1;
+import "google/protobuf/timestamp.proto";
+
+option go_package = "pkg/entryfy/org/sites/v1";
+option java_multiple_files = true;
+option java_package = "com.entryfy.org.sites.v1";
+option csharp_namespace = "Entryfy.Org.Sites.V1";
+option ruby_package = "Entryfy::Org::Sites::V1";
+
+// Main entity, serving as a container for other ones
+message SiteState {
+    string uuid = 1; // Mandatory
+    string site_uuid = 2; // Mandatory
+    uint64 version = 3;
+    enum Status {
+        STATUS_UNSPECIFIED = 0;
+        STATUS_ACCEPTED = 1;
+        STATUS_PENDING = 2;
+        STATUS_DEPLOYED = 3;
+        STATUS_FAILED = 4;
+    }
+    Status status = 4; // Mandatory
+    repeated Door doors = 5;
+    repeated User users = 6;
+    repeated Schedule schedules = 7;
+    repeated UserGroup user_groups = 8;
+    repeated TemporaryAccess temporary_accesses = 9;
+    repeated Organization organizations = 10;
+}
+
+message StateAnnouncement {
+    string uuid = 1; // Mandatory, state UUID
+    enum Status {
+        STATUS_UNSPECIFIED = 0;
+        STATUS_ACCEPTED = 1;
+        STATUS_PENDING = 2;
+        STATUS_DEPLOYED = 3;
+        STATUS_FAILED = 4;
+    }
+    Status status = 2; // Mandatory
+    string sender_service = 3; // Mandatory lowercase, e.g. 'axis' or 'null'
+}
+
+// Door is a stripped down version of Security Device
+// No need to send all SecurityDevice data, since it is already present on the other side
+message Door {
+    string uuid = 1; // Mandatory
+    string controller_uuid = 2; // Mandatory
+    string vendor = 3; // Mandatory
+    string name = 4;
+}
+
+// Organizations are needed only for its cipher keys
+message Organization {
+    string slug = 1; // Mandatory
+    string name = 2;
+    string cipher_key = 3;
+}
+
+message User {
+    string uuid = 1; // Mandatory
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+    bool enabled = 5;
+    string passcode = 6; // Mandatory
+    string qrcode = 7; // Mandatory
+    string cipher_key = 8;
+    repeated Pincode pincodes = 9;
+    repeated KeyCard key_cards = 10;
+}
+
+// Key cards should be embedded into User object
+message KeyCard {
+    string uuid = 1; // Mandatory
+    string nr = 2; // Mandatory
+    string value = 3; // Mandatory
+    string label = 4;
+    repeated KeyCardMapping key_card_mappings = 5;
+}
+
+// Pin codes should be embedded into User object
+message Pincode {
+    string uuid = 1; // Mandatory
+    string value = 2; // Mandatory
+    string label = 3;
+    repeated PincodeMapping pincode_mappings = 4;
+}
+
+message Schedule {
+    string uuid = 1; // Mandatory
+    bool default = 2; // Mandatory
+    string name = 3; // Mandatory
+    string description = 4;
+    string slug = 5; // Needed mostly for default schedules
+    string schedule_definition = 6; // Mandatory
+    string exception_definition = 7;
+}
+
+message UserGroup {
+    string uuid = 1; // Mandatory
+    string name = 2; // Mandatory
+    bool enabled = 3; // True if not set
+    google.protobuf.Timestamp valid_from = 4;
+    google.protobuf.Timestamp valid_to = 5;
+    enum AuthType {
+        AUTH_TYPE_UNSPECIFIED = 0;
+        AUTH_TYPE_REX = 1; // Door open button
+        AUTH_TYPE_CARD = 2; // Show QR
+        AUTH_TYPE_PIN = 3; // PIN
+        AUTH_TYPE_CARD_PLUS_PIN = 4; // Show QR, enter pin on keypad
+        AUTH_TYPE_SCAN = 5; // Scan QR on the door
+        AUTH_TYPE_SCAN_PLUS_KEYPAD = 6; // Scan QR on the door, enter pin on keypad
+        AUTH_TYPE_SCAN_PLUS_PHONE = 7; // Scan QR on the door, enter pin on phone's virtual keypad
+        AUTH_TYPE_KEY_CARD = 8; // NFC Card
+        AUTH_TYPE_REMOTE = 9; // Open door remotely
+        AUTH_TYPE_REMOTE_PLUS_PHONE = 10; // Open door remotely after entering pin on phone's virtual keypad
+        AUTH_TYPE_CARD_PLUS_PHONE = 11; // Show QR, enter pin on phone's virtual keypad
+        AUTH_TYPE_PASSCODE = 12;
+        AUTH_TYPE_KEY_CARD_PLUS_PIN = 13; // NFC Card, enter pin on keypad
+    }
+    AuthType in_auth_type = 6; // Mandatory
+    AuthType out_auth_type = 7; // Mandatory
+    repeated string user_uuids = 8;
+    repeated string door_uuids = 9;
+    repeated string schedule_uuids = 10; // Mandatory
+}
+
+message TemporaryAccess {
+    string uuid = 1; // Mandatory
+    string name = 2; // Mandatory
+    google.protobuf.Timestamp valid_from = 3; // Mandatory
+    google.protobuf.Timestamp valid_to = 4; // Mandatory
+    string schedule_uuid = 5; // Mandatory
+    repeated TemporaryAccessDoor doors = 6; // Mandatory
+    repeated TemporaryAccessUser users = 7; // Mandatory
+}
+
+// Should be embedded in TemporaryAccess
+message TemporaryAccessDoor {
+    string uuid = 1;
+    string temporary_access_uuid = 2;
+    string security_device_uuid = 3;
+    bool lock_unlock_enabled = 4;
+    repeated string in_auth_types = 5;
+    repeated string out_auth_types = 6;
+}
+
+// Should be embedded in TemporaryAccess
+message TemporaryAccessUser {
+    string uuid = 1;
+    string temporary_access_uuid = 2;
+    string user_uuid = 3;
+}
+
+// Should be embedded in Pincode
+message PincodeMapping {
+    string uuid = 1; // Mandatory
+    string door_uuid = 2; // Mandatory
+    string user_group_uuid = 3;
+    string temporary_access_uuid = 4;
+}
+
+// Should be embedded in KeyCard
+message KeyCardMapping {
+    string uuid = 1; // Mandatory
+    string door_uuid = 2; // Mandatory
+    string user_group_uuid = 3;
+    string temporary_access_uuid = 4;
+}

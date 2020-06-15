@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package entryfy.global.entities.v1;
+import "google/protobuf/timestamp.proto";
+
+option go_package = "pkg/entryfy/global/entities/v1";
+option java_multiple_files = true;
+option java_package = "com.entryfy.global.entities.v1";
+option csharp_namespace = "Entryfy.Global.Entities.V1";
+option ruby_package = "Entryfy::Global::Entities::V1";
+
+message SecurityDevice {
+    uint64 id = 1;
+    string uuid = 2;
+    uint64 parent_id = 3;
+    string parent_uuid = 4;
+    string name = 5;
+    string description = 6;
+    enum Kind {
+        KIND_UNSPECIFIED = 0;
+        KIND_SITE = 1;
+        KIND_SECTION = 2;
+        KIND_DOOR_CONTROLLER = 3;
+        KIND_DOOR = 4;
+        KIND_UNKNOWN = 5;
+    }
+    Kind kind = 7;
+    double latitude = 8;
+    double longitude = 9;
+    uint32 max_radius = 10;
+    bool remote_access_enabled = 11;
+    string timezone = 12;
+    bool online = 13; // Only for door controllers
+    string in_qrcode = 14; // Only for doors
+    string out_qrcode = 15; // Only for doors
+    map<string, string> properties = 16;
+    repeated string organization_slugs = 17;
+    google.protobuf.Timestamp created_at = 18;
+    google.protobuf.Timestamp updated_at = 19;
+    map<string, string> preferences = 20;
+    repeated SecurityDevice children = 21;
+}
+
+message SecurityDevices {
+    repeated SecurityDevice security_devices = 1;
+}
+
+message SecurityCamera {
+    uint64 id = 1;
+    string uuid = 2;
+    string controller_login = 3;
+    string controller_password = 4;
+    string controller_token = 5;
+    string controller_url = 6;
+    string door_token = 7;
+    bool enable_distance_check = 8;
+    bool enable_insecure_qr = 9;
+    string id_point_token = 10;
+    string mac_address = 11;
+    string name = 12;
+    uint32 qr_timelimit_seconds = 13;
+    string door_device_uuid = 14;
+    double latitude = 15;
+    double longitude = 16;
+    uint32 max_distance_meters = 17;
+    string serial_number = 18;
+    google.protobuf.Timestamp created_at = 20;
+    google.protobuf.Timestamp updated_at = 21;
+}
+
+message Organization {
+    uint64 id = 1; // Only for internal use
+    string slug = 2; // Unique human-readable identifier
+    string name = 3;
+    bool maintenance = 4;
+    bool active = 5;
+    bool automatic_qr_regeneration_enabled = 6;
+    string cipher_key = 7;
+    string one_signal_id = 8;
+    string one_signal_key = 9;
+    uint32 outages_count_to_set_maintenance = 10;
+    uint32 outages_minutes_to_set_maintenance = 11;
+    bool secure_qr_enabled = 12;
+    string webhook_url = 13;
+    uint32 parent_id = 14;
+
+    google.protobuf.Timestamp created_at = 15;
+    google.protobuf.Timestamp updated_at = 16;
+    bool temporary_access_enabled = 17;
+}
+
+message MobileApp {
+    uint32 id = 1;
+    string uuid = 2;
+    string name = 3;
+    string description = 4;
+    string slug = 5;
+    string organization_slug = 6;
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
+}
+
+message MobileAppVersion {
+    uint32 id = 1;
+    string uuid = 2;
+    enum Platform {
+        PLATFORM_UNSPECIFIED = 0;
+        PLATFORM_IOS = 1;
+        PLATFORM_ANDROID = 2;
+    }
+    Platform platform = 3;
+    enum Status {
+        STATUS_UNSPECIFIED = 0;
+        STATUS_PENDING = 1;
+        STATUS_DEVELOPING = 2;
+        STATUS_DEPLOYED = 3;
+        STATUS_RELEASED = 4;
+    }
+    Status status = 4;
+    string version = 5;
+    string mobile_app_slug = 6;
+
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
+}
